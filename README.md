@@ -23,7 +23,9 @@ On Windows, you can open "Powershell" and type python in the command prompt. If 
 
 6. It will try to install the Websockets library and then execute the script. Ignore potential warnings...
 
-7. Brag to your friends.
+7. To close the program, simply terminate the window or press CTRL+C in the command window.
+
+8. Brag to your friends.
 
 ## How to use (experienced)
 
