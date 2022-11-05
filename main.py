@@ -1,29 +1,31 @@
-ROOM_CODE = "UKJJ"   # <--- FILL WITH 4 letter room code
-
-import asyncio
-import ssl
-import websockets
-import uuid
 import subprocess
 import sys
 
+DEPENDENCY = 'websockets==10.4'
 
-REQUIRED_LIBRARIES = [
-    'websockets==10.4'
-]
+print("--- INSTALLING WEBSOCKETS ----")
+result = subprocess.call([sys.executable, '-m', 'pip', 'install', DEPENDENCY])
 
-def install_libraries_with_pip(libraries):
-    for library in libraries:
-        subprocess.call([sys.executable, '-m', 'pip', 'install', library])
+if result == -1:
+    print("Couldn't install the required dependencies", file=sys.stderr)
+    exit(1)
+
+import importlib
+try:
+    importlib.import_module('websockets')
+except ImportError:
+    print("Couldn't import the required dependency. Try running it again", file=sys.stderr)
+    exit(1)
+finally:
+    globals()['websockets'] = importlib.import_module('websockets')
 
 
-def uninstall_libraries_with_pip(libraries):
-    for library in libraries:
-        subprocess.call([sys.executable, '-m', 'pip', 'uninstall', library])
+import websockets
+import asyncio
+import ssl
+import uuid
 
-
-install_libraries_with_pip(REQUIRED_LIBRARIES)
-
+print("SUCCESS!")
 
 ssl_context = ssl.create_default_context()
 
@@ -49,7 +51,7 @@ extra_headers = {
 }
 
 
-async def hello(name, room_code):
+async def send_request(name, room_code):
     x = uuid.uuid4()
     uri = f"wss://ecast.jackboxgames.com/api/v2/audience/{room_code}/play?role=audience&name={name}&format=json&user-id={x}"
     async with websockets.connect(uri,
@@ -58,12 +60,14 @@ async def hello(name, room_code):
     ) as websocket:
         while True:
             response = await websocket.recv()
-            print(response)
+            print(response)  # Uncomment to see the response.
 
 
 async def main():
-    tasks = [asyncio.create_task(hello(f"TOM{i}", ROOM_CODE)) for i in range(10)]
-    await asyncio.gather(*tasks)
+    room_code = input("What is your room code? ")
+    print(f"Sending requests to {room_code}!")
+    tasks = [asyncio.create_task(send_request(f"TED{i}", room_code)) for i in range(1000)]
 
+    await asyncio.gather(*tasks)
 
 asyncio.get_event_loop().run_until_complete(main())
