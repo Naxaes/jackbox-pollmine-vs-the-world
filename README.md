@@ -11,9 +11,9 @@ On Windows, you can open "Powershell" and type python in the command prompt. If 
 
 ## How to use (absolute beginner) after installing python
 
-1. Click on `code` in the upper left corner and download as zip (unless you are familiar with git).
+1. Click on `code` in the upper right corner and download as zip (unless you are familiar with git).
 
-2. Open the zip file.
+2. Open the zip file and extract the files.
 
 3. Right click on the file `main.py` and choose "open with..." and select "Python launcher 3" or "Python3".
 
