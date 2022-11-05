@@ -60,16 +60,15 @@ async def send_request(name, room_code):
         subprotocols=['ecast-v0'],
         extra_headers=extra_headers
     ) as websocket:
-        while True:
-            response = await websocket.recv()
-            print(response)  # Uncomment to see the response.
+        response = await websocket.recv()
+        await asyncio.sleep(10)
 
 
 async def main():
     room_code = input("What is your room code? ")
     print(f"Sending requests to {room_code}!")
     tasks = [asyncio.create_task(send_request(f"TED{i}", room_code)) for i in range(1000)]
-
     await asyncio.gather(*tasks)
+    print("Finished!")
 
 asyncio.get_event_loop().run_until_complete(main())
