@@ -61,13 +61,17 @@ async def send_request(name, room_code):
         extra_headers=extra_headers
     ) as websocket:
         response = await websocket.recv()
-        await asyncio.sleep(10)
+        await asyncio.sleep(20)
 
 
 async def main():
     room_code = input("What is your room code? ")
     print(f"Sending requests to {room_code}!")
-    tasks = [asyncio.create_task(send_request(f"TED{i}", room_code)) for i in range(1000)]
+    tasks = []
+    for i in range(1000):
+        # Sleeping to try to prevent getting time-out due to throttling.
+        await asyncio.sleep(0.01)
+        tasks.append(asyncio.create_task(send_request(f"TED{i}", room_code)))
     await asyncio.gather(*tasks)
     print("Finished!")
 
